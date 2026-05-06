@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MarginIQ — Узнайте, сколько вы РЕАЛЬНО зарабатываете с рекламы</title>
+<meta name="description" content="MarginIQ связывает Google Ads и SalesDrive и показывает настоящую чистую маржу по каждому товару. Бесплатный аудит за 24 часа.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08090C; --bg-card:#11141A; --bg-card-2:#181C24;
+    --border:#252B36; --txt:#FFFFFF; --txt-mute:#8B92A0;
+    --accent:#00D9A3; --accent-2:#00B8E6; --accent-glow:rgba(0,217,163,.25);
+    --orange:#FF8A3D; --red:#FF4757;
+    --gradient:linear-gradient(135deg,#00D9A3 0%,#00B8E6 100%);
+    --gradient-dark:linear-gradient(180deg,rgba(0,217,163,.08) 0%,rgba(0,184,230,.02) 100%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;font-weight:400;overflow-x:hidden}
+  ::selection{background:var(--accent);color:#000}
+  .bg-glow{position:fixed;width:800px;height:800px;background:radial-gradient(circle,rgba(0,217,163,.12) 0%,transparent 60%);top:-200px;right:-200px;pointer-events:none;z-index:0}
+  .bg-glow-2{position:fixed;width:600px;height:600px;background:radial-gradient(circle,rgba(0,184,230,.1) 0%,transparent 60%);bottom:-100px;left:-200px;pointer-events:none;z-index:0}
+  nav{position:sticky;top:0;z-index:100;background:rgba(8,9,12,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:18px 32px}
+  .nav-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+  .logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:-0.5px;color:#fff;text-decoration:none}
+  .logo-icon{width:34px;height:34px;border-radius:9px;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:#000;font-weight:900;box-shadow:0 4px 20px rgba(0,217,163,.4)}
+  .nav-links{display:flex;gap:32px;align-items:center}
+  .nav-links a{color:var(--txt-mute);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
+  .nav-links a:hover{color:var(--txt)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;border:none;cursor:pointer;transition:all .2s;font-family:inherit}
+  .btn-primary{background:var(--gradient);color:#000;box-shadow:0 4px 24px var(--accent-glow)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 32px var(--accent-glow)}
+  .btn-ghost{background:transparent;color:var(--txt);border:1px solid var(--border)}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .btn-large{padding:16px 32px;font-size:16px}
+  .container{max-width:1280px;margin:0 auto;padding:0 32px;position:relative;z-index:1}
+  section{padding:100px 0;position:relative}
+  .hero{padding:80px 0 120px}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:100px;background:rgba(0,217,163,.1);border:1px solid rgba(0,217,163,.3);font-size:13px;color:var(--accent);font-weight:500;margin-bottom:24px}
+  .hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+  h1{font-size:clamp(42px,6vw,76px);font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:24px}
+  h1 .gradient{background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+  .hero-sub{font-size:20px;color:var(--txt-mute);max-width:680px;margin-bottom:40px;line-height:1.5}
+  .hero-cta{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:48px}
+  .hero-trust{display:flex;gap:32px;font-size:13px;color:var(--txt-mute);flex-wrap:wrap;align-items:center}
+  .hero-trust-item{display:flex;align-items:center;gap:8px}
+  .hero-trust-item svg{color:var(--accent)}
+  .hero-preview{margin-top:80px;border-radius:16px;overflow:hidden;background:var(--bg-card);border:1px solid var(--border);padding:24px;box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.04)}
+  .preview-bar{display:flex;align-items:center;gap:8px;padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:20px}
+  .preview-dot{width:12px;height:12px;border-radius:50%;background:var(--border)}
+  .preview-dot.r{background:#FF5F57} .preview-dot.y{background:#FEBC2E} .preview-dot.g{background:#28C840}
+  .preview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  .preview-kpi{background:var(--bg-card-2);border:1px solid var(--border);padding:16px;border-radius:10px;position:relative;overflow:hidden}
+  .preview-kpi::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+  .preview-kpi.red::before{background:var(--red)} .preview-kpi.orange::before{background:var(--orange)}
+  .preview-kpi-label{font-size:11px;color:var(--txt-mute);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+  .preview-kpi-value{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+  .preview-kpi-trend{font-size:11px;color:var(--txt-mute);margin-top:2px}
+  .preview-chart{height:180px;background:linear-gradient(180deg,rgba(0,217,163,.15) 0%,transparent 100%);border-radius:10px;overflow:hidden}
+  .preview-chart svg{width:100%;height:100%;display:block}
+  .problem{background:linear-gradient(180deg,transparent 0%,rgba(255,71,87,.04) 50%,transparent 100%)}
+  .section-eyebrow{font-size:13px;color:var(--accent);font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px}
+  h2{font-size:clamp(32px,4.5vw,52px);font-weight:800;line-height:1.1;letter-spacing:-1.5px;margin-bottom:20px}
+  .section-sub{font-size:18px;color:var(--txt-mute);max-width:620px;margin:0 auto 60px;text-align:center}
+  .text-center{text-align:center}
+  .vs-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:32px;align-items:center}
+  .vs-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px}
+  .vs-card.bad{border-color:rgba(255,71,87,.3)}
+  .vs-card.good{border-color:rgba(0,217,163,.3);background:linear-gradient(135deg,rgba(0,217,163,.06),transparent)}
+  .vs-label{font-size:13px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px}
+  .vs-card.bad .vs-label{color:var(--red)}
+  .vs-card.good .vs-label{color:var(--accent)}
+  .vs-num{font-size:48px;font-weight:800;line-height:1;margin-bottom:8px}
+  .vs-card.bad .vs-num{color:var(--red)}
+  .vs-card.good .vs-num{color:var(--accent)}
+  .vs-desc{color:var(--txt-mute);font-size:15px}
+  .vs-arrow{width:50px;height:50px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;color:#000;flex-shrink:0}
+  .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+  .feature{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px;transition:all .2s;position:relative;overflow:hidden}
+  .feature::before{content:'';position:absolute;top:-50%;right:-50%;width:200px;height:200px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 60%);opacity:0;transition:opacity .3s}
+  .feature:hover{border-color:rgba(0,217,163,.4);transform:translateY(-4px)}
+  .feature:hover::before{opacity:1}
+  .feature-icon{width:52px;height:52px;border-radius:12px;background:var(--gradient-dark);display:flex;align-items:center;justify-content:center;margin-bottom:20px;color:var(--accent);position:relative;z-index:1;border:1px solid rgba(0,217,163,.2)}
+  .feature h3{font-size:20px;font-weight:700;margin-bottom:10px;position:relative;z-index:1}
+  .feature p{color:var(--txt-mute);font-size:15px;position:relative;z-index:1}
+  .case{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:60px;position:relative;overflow:hidden}
+  .case::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+  .case-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+  .case-tag{display:inline-block;padding:6px 14px;border-radius:100px;background:rgba(0,217,163,.1);color:var(--accent);font-size:12px;font-weight:600;letter-spacing:.5px;margin-bottom:20px}
+  .case h3{font-size:32px;font-weight:800;line-height:1.2;margin-bottom:20px}
+  .case-quote{font-size:17px;color:var(--txt-mute);margin-bottom:32px;line-height:1.6}
+  .case-stats{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .case-stat{background:var(--bg-card-2);border:1px solid var(--border);border-radius:12px;padding:20px}
+  .case-stat-num{font-size:32px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:6px}
+  .case-stat-num.red{color:var(--red)}
+  .case-stat-label{font-size:13px;color:var(--txt-mute)}
+  .case-list{list-style:none;padding:0}
+  .case-list li{padding:14px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px;font-size:15px}
+  .case-list li:last-child{border:none}
+  .case-list li svg{flex-shrink:0;color:var(--accent);margin-top:3px}
+  .pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .price-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px 24px;position:relative;display:flex;flex-direction:column}
+  .price-card.featured{border-color:var(--accent);background:linear-gradient(180deg,rgba(0,217,163,.05),var(--bg-card));box-shadow:0 20px 60px rgba(0,217,163,.15)}
+  .price-card.featured::before{content:'⭐ Хит';position:absolute;top:-12px;right:24px;background:var(--gradient);color:#000;font-size:12px;font-weight:700;padding:5px 12px;border-radius:100px}
+  .price-name{font-size:14px;font-weight:600;color:var(--txt-mute);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+  .price-amount{display:flex;align-items:baseline;gap:6px;margin-bottom:8px}
+  .price-num{font-size:40px;font-weight:800;letter-spacing:-1px}
+  .price-currency{font-size:18px;color:var(--txt-mute)}
+  .price-period{font-size:14px;color:var(--txt-mute);margin-bottom:24px}
+  .price-features{list-style:none;padding:0;margin-bottom:32px;flex:1}
+  .price-features li{padding:8px 0;font-size:14px;color:var(--txt-mute);display:flex;align-items:flex-start;gap:10px}
+  .price-features li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0}
+  .price-card .btn{width:100%;justify-content:center}
+  .cta-banner{background:linear-gradient(135deg,#11141A 0%,#1A1F2A 100%);border:1px solid var(--accent);border-radius:24px;padding:60px;text-align:center;position:relative;overflow:hidden}
+  .cta-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(0,217,163,.15) 0%,transparent 60%);pointer-events:none}
+  .cta-banner h2{position:relative;z-index:1;margin-bottom:16px}
+  .cta-banner p{position:relative;z-index:1;color:var(--txt-mute);font-size:18px;margin-bottom:32px}
+  .cta-banner .btn{position:relative;z-index:1}
+  .faq-grid{max-width:800px;margin:0 auto}
+  .faq-item{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden}
+  .faq-q{padding:20px 24px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-weight:600;font-size:16px;user-select:none}
+  .faq-q::after{content:'+';font-size:24px;color:var(--accent);transition:transform .2s;font-weight:300}
+  .faq-item.open .faq-q::after{transform:rotate(45deg)}
+  .faq-a{padding:0 24px;max-height:0;overflow:hidden;transition:all .3s;color:var(--txt-mute);font-size:15px}
+  .faq-item.open .faq-a{padding:0 24px 20px;max-height:300px}
+  footer{border-top:1px solid var(--border);padding:60px 0 40px;margin-top:60px;color:var(--txt-mute);font-size:14px}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+  .footer-logo-block .logo{margin-bottom:16px}
+  .footer-tagline{font-size:14px;color:var(--txt-mute);max-width:300px}
+  .footer-col h4{color:var(--txt);font-size:14px;font-weight:600;margin-bottom:16px}
+  .footer-col ul{list-style:none;padding:0}
+  .footer-col li{padding:6px 0}
+  .footer-col a{color:var(--txt-mute);text-decoration:none;transition:color .2s}
+  .footer-col a:hover{color:var(--accent)}
+  .footer-bottom{padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+  @media(max-width:900px){
+    section{padding:60px 0}
+    .pricing-grid{grid-template-columns:1fr 1fr}
+    .case-grid{grid-template-columns:1fr;gap:32px}
+    .case{padding:32px}
+    .vs-grid{grid-template-columns:1fr;gap:16px}
+    .vs-arrow{transform:rotate(90deg);margin:0 auto}
+    .footer-grid{grid-template-columns:1fr 1fr;gap:24px}
+    .nav-links{display:none}
+    .preview-grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:560px){
+    .pricing-grid{grid-template-columns:1fr}
+    .preview-grid{grid-template-columns:1fr}
+    .cta-banner{padding:32px 20px}
+    h1{font-size:38px}
+  }
+  @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+  .fade-up{animation:fadeUp .8s ease-out}
+  .fade-up-2{animation:fadeUp .8s ease-out .15s backwards}
+  .fade-up-3{animation:fadeUp .8s ease-out .3s backwards}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="bg-glow-2"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo"><div class="logo-icon">M</div>MarginIQ</a>
+    <div class="nav-links">
+      <a href="#features">Возможности</a>
+      <a href="#case">Кейс</a>
+      <a href="#pricing">Тарифы</a>
+      <a href="#faq">FAQ</a>
+      <a href="#cta" class="btn btn-primary">Получить демо</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge fade-up"><span class="dot"></span>Для украинских e-com магазинов и агентств</div>
+    <h1 class="fade-up">Узнайте, сколько вы<br><span class="gradient">РЕАЛЬНО зарабатываете</span><br>с каждого товара после рекламы</h1>
+    <p class="hero-sub fade-up-2">MarginIQ связывает Google Ads и SalesDrive в одном дашборде. Покажем настоящую чистую маржу — после рекламы, комиссии эквайринга и себестоимости. <strong style="color:#fff">До 30% магазинов теряют прибыль на «прибыльных» кампаниях</strong>, не зная об этом.</p>
+    <div class="hero-cta fade-up-3">
+      <a href="#cta" class="btn btn-primary btn-large">Получить бесплатный аудит<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+      <a href="#case" class="btn btn-ghost btn-large">Посмотреть кейс →</a>
+    </div>
+    <div class="hero-trust fade-up-3">
+      <div class="hero-trust-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Free-trial 14 дней</div>
+      <div class="hero-trust-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Гарантия возврата</div>
+      <div class="hero-trust-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Настройка за 24 часа</div>
+      <div class="hero-trust-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Цены в гривнах</div>
+    </div>
+
+    <div class="hero-preview">
+      <div class="preview-bar">
+        <div class="preview-dot r"></div><div class="preview-dot y"></div><div class="preview-dot g"></div>
+        <span style="color:var(--txt-mute);font-size:12px;margin-left:12px">app.marginiq.ua / dashboard</span>
+      </div>
+      <div class="preview-grid">
+        <div class="preview-kpi"><div class="preview-kpi-label">Выручка</div><div class="preview-kpi-value">423 069 ₴</div><div class="preview-kpi-trend">84 заказа</div></div>
+        <div class="preview-kpi orange"><div class="preview-kpi-label">Расход на рекламу</div><div class="preview-kpi-value">32 107 ₴</div><div class="preview-kpi-trend">5 982 кликов</div></div>
+        <div class="preview-kpi"><div class="preview-kpi-label">Чистая прибыль</div><div class="preview-kpi-value" style="color:var(--accent)">64 299 ₴</div><div class="preview-kpi-trend">маржа 15.2%</div></div>
+        <div class="preview-kpi red"><div class="preview-kpi-label">Кампаний в минус</div><div class="preview-kpi-value" style="color:var(--red)">2</div><div class="preview-kpi-trend">найдено MarginIQ</div></div>
+      </div>
+      <div class="preview-chart">
+        <svg viewBox="0 0 800 180" preserveAspectRatio="none">
+          <defs><linearGradient id="grad1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00D9A3" stop-opacity="0.4"/><stop offset="100%" stop-color="#00D9A3" stop-opacity="0"/></linearGradient></defs>
+          <path d="M0,150 C100,140 150,80 250,90 C350,100 400,40 500,50 C600,60 700,30 800,20 L800,180 L0,180 Z" fill="url(#grad1)"/>
+          <path d="M0,150 C100,140 150,80 250,90 C350,100 400,40 500,50 C600,60 700,30 800,20" fill="none" stroke="#00D9A3" stroke-width="2.5"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="problem">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:60px">
+      <div class="section-eyebrow">⚠️ Главная проблема</div>
+      <h2>Google Ads врёт вам в лицо</h2>
+      <p class="section-sub">Не специально. Просто Google не знает вашей себестоимости, комиссии банка и закупочных цен. Поэтому ROAS 10× может означать минус по чистой прибыли.</p>
+    </div>
+    <div class="vs-grid">
+      <div class="vs-card bad">
+        <div class="vs-label">Что показывает Google</div>
+        <div class="vs-num">10×</div>
+        <div class="vs-desc">ROAS — отлично!<br>Кампания «приносит» 10 ₴ на каждый вложенный 1 ₴</div>
+      </div>
+      <div class="vs-arrow"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+      <div class="vs-card good">
+        <div class="vs-label">Что показывает MarginIQ</div>
+        <div class="vs-num">−2.7%</div>
+        <div class="vs-desc">Реальная чистая маржа.<br>После себестоимости (76%), комиссии и налогов вы в минусе</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:60px">
+      <div class="section-eyebrow">✨ Возможности</div>
+      <h2>Что вы получите</h2>
+      <p class="section-sub">Один дашборд, который сводит всю экономику вашего магазина и показывает правду по каждому SKU.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg></div>
+        <h3>Чистая маржа по каждому товару</h3>
+        <p>Выручка − Себестоимость − Комиссия эквайринга − Реклама. Видите правду до копейки по каждому SKU.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <h3>Настоящий ROAS вашего бизнеса</h3>
+        <p>На основе реальных продаж в CRM, а не «ценности конверсий» из Google. Сравнение в одной таблице.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
+        <h3>Чистый доход за 1 штуку</h3>
+        <p>Сколько кладёте в карман с каждой продажи конкретного товара. Сразу видно, что выгодно масштабировать.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+        <h3>Слив бюджета в один клик</h3>
+        <p>Топ товаров, которые сжигают деньги без конверсий. Один список — паузить или править фид.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h3>Корреляции и аномалии</h3>
+        <p>Алгоритм находит резкие изменения, дубли товаров на разных языках, потерянные UTM. Чтобы вы не упустили.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <h3>Готовые интеграции</h3>
+        <p>Google Ads, SalesDrive, Horoshop, KeyCRM, Prom.ua. Подключение в один клик OAuth, без программистов.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="case">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:60px">
+      <div class="section-eyebrow">📊 Реальный кейс</div>
+      <h2>Как Fedox.com.ua нашёл 9 215 ₴ скрытых расходов</h2>
+    </div>
+    <div class="case">
+      <div class="case-grid">
+        <div>
+          <div class="case-tag">Магазин инструментов · 84 продажи / мес</div>
+          <h3>«ROAS 10× выглядел как победа. MarginIQ показал, что 2 кампании работают в минус, а 8 SKU задвоены в фиде»</h3>
+          <p class="case-quote">До MarginIQ мы смотрели только на ROAS в Google Ads. Не сводили данные с CRM, не учитывали себестоимость и комиссию эквайринга. После подключения за один день увидели полную картину.</p>
+          <div class="case-stats">
+            <div class="case-stat"><div class="case-stat-num">9 215 ₴</div><div class="case-stat-label">скрытого расхода найдено<br>(дубли товаров)</div></div>
+            <div class="case-stat"><div class="case-stat-num red">2</div><div class="case-stat-label">кампании в минус<br>(маржа −2.7% и −1.3%)</div></div>
+            <div class="case-stat"><div class="case-stat-num">15.2%</div><div class="case-stat-label">настоящая чистая маржа<br>(вместо «23.4%» по CRM)</div></div>
+            <div class="case-stat"><div class="case-stat-num">449 ₴</div><div class="case-stat-label">чистой прибыли с 1 косы<br>(вместо «1 200 ₴» по фейк-расчёту)</div></div>
+          </div>
+        </div>
+        <div>
+          <ul class="case-list">
+            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><div><strong>14 рекламных кампаний</strong> сведены с CRM по UTM. По каждой — реальная чистая маржа, не мнимая.</div></li>
+            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><div><strong>120 уникальных товаров</strong> с разбивкой себестоимости, комиссии и рекламы. Объединили дубли по коду модели.</div></li>
+            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><div><strong>4 кампании с ROAS 0×</strong> найдены и приостановлены — экономия 3 091 ₴/мес.</div></li>
+            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><div><strong>Топ-3 кампании</strong> по чистой марже выявлены — план масштабирования бюджета.</div></li>
+            <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><div><strong>Настройка за 24 часа</strong> — без программистов, без таблиц, без танцев с бубном.</div></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:60px">
+      <div class="section-eyebrow">💰 Тарифы</div>
+      <h2>Выберите свой план</h2>
+      <p class="section-sub">14 дней бесплатно, без карты. Цены в гривнах. Отмена в один клик.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name">Starter</div>
+        <div class="price-amount"><span class="price-num">990</span><span class="price-currency">₴/мес</span></div>
+        <div class="price-period">≈ $24 · до 500 заказов/мес</div>
+        <ul class="price-features">
+          <li>1 Google Ads аккаунт</li><li>1 CRM (SalesDrive)</li><li>До 1 000 товаров</li>
+          <li>Обновление раз в день</li><li>Базовые отчёты</li><li>Email-поддержка</li>
+        </ul>
+        <a href="#cta" class="btn btn-ghost">Начать бесплатно</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-name">Pro</div>
+        <div class="price-amount"><span class="price-num">2 490</span><span class="price-currency">₴/мес</span></div>
+        <div class="price-period">≈ $60 · 500–3 000 заказов/мес</div>
+        <ul class="price-features">
+          <li>До 3 рекламных аккаунтов</li><li>Неограниченные товары</li>
+          <li>Обновление каждые 4 часа</li><li>Email-алерты по аномалиям</li>
+          <li>Выгрузки в Excel/CSV</li><li>Приоритетная поддержка</li><li>Кастомные отчёты</li>
+        </ul>
+        <a href="#cta" class="btn btn-primary">Попробовать Pro</a>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Business</div>
+        <div class="price-amount"><span class="price-num">5 990</span><span class="price-currency">₴/мес</span></div>
+        <div class="price-period">≈ $146 · крупный e-com</div>
+        <ul class="price-features">
+          <li>Multi-store</li><li>До 10 аккаунтов</li><li>Real-time обновление</li>
+          <li>API доступ</li><li>Кастомные интеграции</li><li>Личный менеджер</li><li>SLA 99.9%</li>
+        </ul>
+        <a href="#cta" class="btn btn-ghost">Связаться</a>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Agency</div>
+        <div class="price-amount"><span class="price-num">15 000+</span><span class="price-currency">₴/мес</span></div>
+        <div class="price-period">≈ $366 · агентствам</div>
+        <ul class="price-features">
+          <li>До 20 клиентов</li><li>White-label (ваш бренд)</li><li>Свой домен</li>
+          <li>Сводный отчёт по клиентам</li><li>Партнёрская комиссия 30%</li><li>Совместный маркетинг</li>
+        </ul>
+        <a href="#cta" class="btn btn-ghost">Запросить демо</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cta">
+  <div class="container">
+    <div class="cta-banner">
+      <h2>Готовы увидеть настоящую картину?</h2>
+      <p>Подключим Google Ads + CRM за 24 часа. Покажем чистую маржу по каждому товару бесплатно.<br><strong style="color:var(--accent)">Гарантия:</strong> найдём минимум 5% потерь — или вернём деньги.</p>
+      <a href="mailto:hello@marginiq.ua?subject=Бесплатный аудит MarginIQ" class="btn btn-primary btn-large">Получить бесплатный аудит<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:60px">
+      <div class="section-eyebrow">❓ FAQ</div>
+      <h2>Частые вопросы</h2>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item"><div class="faq-q">Какие CRM поддерживаются?</div><div class="faq-a">SalesDrive, KeyCRM, Bitrix24, Horoshop, Prom.ua, Rozetka API. Если у вас другая CRM — мы добавим интеграцию в течение 2 недель за стандартную плату 20 000–50 000 ₴ либо включим в Business-тариф.</div></div>
+      <div class="faq-item"><div class="faq-q">Сколько занимает настройка?</div><div class="faq-a">24 часа. Вы подключаете Google Ads через OAuth, даёте API-ключ от CRM (мы вышлем инструкцию). Дальше всё автоматически. Ручная установка под ключ — 5 000–15 000 ₴ разово.</div></div>
+      <div class="faq-item"><div class="faq-q">Безопасны ли мои данные?</div><div class="faq-a">Серверы в ЕС, шифрование TLS, AES-256 для хранения. Соответствуем GDPR и украинскому закону «О защите персональных данных». Доступ к данным имеете только вы. Не передаём данные третьим сторонам.</div></div>
+      <div class="faq-item"><div class="faq-q">Можно ли вернуть деньги?</div><div class="faq-a">Да. Гарантия: если за первые 30 дней мы не найдём минимум 5% потерь в вашей рекламе, возвращаем 100% оплаты без вопросов. У нас в среднем находим 8–25% — гарантия в 5% более чем выполнима.</div></div>
+      <div class="faq-item"><div class="faq-q">Подойдёт ли мне, если у меня всего 100 заказов в месяц?</div><div class="faq-a">Да, тариф Starter создан именно для таких магазинов. Чем меньше магазин, тем критичнее каждая копейка маржи. Часто маленькие магазины теряют 10–20% прибыли на «прибыльной» рекламе — мы это исправляем.</div></div>
+      <div class="faq-item"><div class="faq-q">Я уже использую Google Sheets — зачем переходить?</div><div class="faq-a">Sheets требуют ручной выгрузки и сводки каждый раз. Ошибка в формуле — и вы принимаете решения по неверным данным. MarginIQ обновляется автоматически каждые 4 часа, формулы протестированы на сотнях магазинов.</div></div>
+      <div class="faq-item"><div class="faq-q">Я агентство, как работать с MarginIQ?</div><div class="faq-a">Тариф Agency — white-label с вашим логотипом и доменом, до 20 клиентов в одной подписке. Дополнительно даём 30% комиссии на привлечённых вами клиентов в первый год. Свяжитесь — обсудим условия.</div></div>
+      <div class="faq-item"><div class="faq-q">Кто стоит за продуктом?</div><div class="faq-a">Команда e-commerce-предпринимателей и аналитиков из Украины. Сами управляем магазинами на SalesDrive и Horoshop, на собственном опыте знаем, какие отчёты нужны на самом деле. Поддержка на украинском и русском.</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-logo-block">
+        <div class="logo"><div class="logo-icon">M</div>MarginIQ</div>
+        <p class="footer-tagline">Настоящая маржа. Настоящий ROAS. Настоящая прибыль из вашей рекламы и CRM.</p>
+      </div>
+      <div class="footer-col"><h4>Продукт</h4><ul><li><a href="#features">Возможности</a></li><li><a href="#pricing">Тарифы</a></li><li><a href="#case">Кейс</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div class="footer-col"><h4>Компания</h4><ul><li><a href="#">О нас</a></li><li><a href="#">Блог</a></li><li><a href="#">Партнёрство</a></li><li><a href="#">Контакты</a></li></ul></div>
+      <div class="footer-col"><h4>Контакты</h4><ul><li><a href="mailto:hello@marginiq.ua">hello@marginiq.ua</a></li><li><a href="https://t.me/marginiq">Telegram</a></li><li><a href="#">+380 (XX) XXX-XX-XX</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 MarginIQ. Сделано в Украине. 🇺🇦</div>
+      <div><a href="#" style="color:var(--txt-mute);margin-right:16px">Политика конфиденциальности</a><a href="#" style="color:var(--txt-mute)">Договор оферты</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href');
+    if (id === '#') return;
+    const el = document.querySelector(id);
+    if (el) { e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  });
+});
+</script>
+
+</body>
+</html>
